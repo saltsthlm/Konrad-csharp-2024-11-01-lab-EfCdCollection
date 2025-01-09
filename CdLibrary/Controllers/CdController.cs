@@ -107,6 +107,21 @@ public class CdsController : Controller
         return NoContent();
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCd(int id)
+    {
+        var cd = await _context.Cd.FindAsync(id);
+        if (cd == null)
+        {
+            return NotFound();
+        }
+
+        _context.Cd.Remove(cd);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private bool CdExists(int id)
     {
         return _context.Cd.Any(cd => cd.Id == id);
