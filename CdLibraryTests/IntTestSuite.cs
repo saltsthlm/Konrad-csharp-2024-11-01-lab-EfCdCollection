@@ -135,4 +135,34 @@ public class TestSuite1 : IAsyncLifetime
         Assert.NotNull(dbCd);
         Assert.Equal(updatedCd.Artist, dbCd?.Artist);
     }
+
+    [Fact]
+    public async Task DeleteShouldRemoveRow()
+    {
+        if (_dbContext == null)
+        {
+            throw new InvalidOperationException("Database context is not initialized.");
+        }
+
+        var cd = new Cd
+        {
+            Artist = "To Be Deleted Artist",
+            Name = "To Be Deleted Title",
+            Description = "To Be Deleted Description",
+            Genre = new Genre { Name = "To Be Deleted Genre" }
+        };
+
+        _dbContext.Cd.Add(cd);
+        await _dbContext.SaveChangesAsync();
+
+        var cdService = new CdService(_dbContext);
+        var controller = new CdsController(_dbContext, cdService);
+
+        var result = await controller.DeleteCd(cd.Id);
+
+        Assert.IsType<NoContentResult>(result);
+
+        var dbCd = await _dbContext.Cd.FindAsync(cd.Id);
+        Assert.Null(dbCd);
+    }
 }
