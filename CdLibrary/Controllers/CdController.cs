@@ -29,8 +29,7 @@ public class CdsController : Controller
             query = query.Where(cd => cd.Genre != null && cd.Genre.Name == genre);
         }
 
-        var list = await query.ToListAsync();
-        return list;
+        return await query.ToListAsync();
     }
 
     [HttpPost]
