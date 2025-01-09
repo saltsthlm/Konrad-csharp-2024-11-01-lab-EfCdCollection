@@ -26,7 +26,7 @@ public class CdController : Controller
 
         if (!string.IsNullOrEmpty(genre))
         {
-            query = query.Where(cd => cd.Genre.Name == genre);
+            query = query.Where(cd => cd.Genre != null && cd.Genre.Name == genre);
         }
 
         var list = await query.ToListAsync();
