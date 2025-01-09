@@ -55,7 +55,7 @@ public class CdController : Controller
         return cd;
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}/artist")]
     public async Task<IActionResult> UpdateCd(int id, string artist)
     {
         var cd = await _context.Cd.FindAsync(id);
@@ -78,6 +78,30 @@ public class CdController : Controller
 
         return NoContent();
         
+    }
+
+    [HttpPut("{id}/genre")]
+    public async Task<IActionResult> UpdateCd(int id, Genre genre)
+    {
+        var cd = await _context.Cd.FindAsync(id);
+
+        if (cd == null)
+        {
+            return NotFound();
+        }
+
+        cd.Genre = genre;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException) when (!CdExists(id))
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 
     private bool CdExists(int id)
