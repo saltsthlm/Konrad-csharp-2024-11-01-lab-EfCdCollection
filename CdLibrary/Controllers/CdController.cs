@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using CdLibrary.Models;
 using CdLibrary.Data;
 
+[ApiController]
+[Route("api/[controller]")]
 public class CdController : Controller
 {
     private readonly CdContext _context;
@@ -19,15 +21,40 @@ public class CdController : Controller
         _context = context;
     }
 
-    [HttpGet("{genre?}")]
-    public async Task<ActionResult<IEnumerable<Cd>>> GetCd(string? genre)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Cd>>> GetCds([FromQuery] string? genre)
     {
-        var list = await _context.Cd.ToListAsync();
-        if (genre != null)
+        var query = _context.Cd.Include(cd => cd.Genre).AsQueryable();
+
+        if (!string.IsNullOrEmpty(genre))
         {
-            return list;
+            query = query.Where(cd => cd.Genre.Name == genre);
         }
-        return list.Where(cd => cd.Genre.Name == genre).ToList();
+
+        var list = await query.ToListAsync();
+        return list;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Cd>> PostCd(Cd cd)
+    {
+        _context.Cd.Add(cd);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetCd", new { id = cd.Id }, cd);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Cd>> GetCd(int id)
+    {
+        var cd = await _context.Cd.FindAsync(id);
+
+        if (cd == null)
+        {
+            return NotFound();
+        }
+
+        return cd;
     }
 
 }
