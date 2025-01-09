@@ -10,11 +10,11 @@ using CdLibrary.Data;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CdController : Controller
+public class CdsController : Controller
 {
     private readonly CdContext _context;
 
-    public CdController(CdContext context)
+    public CdsController(CdContext context)
     {
         _context = context;
     }
