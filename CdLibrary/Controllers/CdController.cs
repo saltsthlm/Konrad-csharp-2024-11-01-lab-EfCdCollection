@@ -19,8 +19,8 @@ public class CdController : Controller
         _context = context;
     }
 
-    [HttpGet("{Genre}")]
-    public async Task<ActionResult<IEnumerable<Cd>>> GetCd(string genre)
+    [HttpGet("{genre?}")]
+    public async Task<ActionResult<IEnumerable<Cd>>> GetCd(string? genre)
     {
         var list = await _context.Cd.ToListAsync();
         if (genre != null)
