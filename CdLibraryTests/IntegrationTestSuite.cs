@@ -1,5 +1,6 @@
 using CdLibrary.Controllers;
 using CdLibrary.Data;
+using CdLibrary.DTOs;
 using CdLibrary.Models;
 using CdLibrary.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,7 @@ public class TestSuite1 : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetAllCDsShouldReturnOk()
+    public async Task GetAllCDsShouldReturnAllCds()
     {
         if (_dbContext == null)
         {
@@ -164,5 +165,37 @@ public class TestSuite1 : IAsyncLifetime
 
         var dbCd = await _dbContext.Cd.FindAsync(cd.Id);
         Assert.Null(dbCd);
+    }
+
+    [Fact]
+    public async Task GetCdShouldReturnCd()
+    {
+        if (_dbContext == null)
+        {
+            throw new InvalidOperationException("Database context is not initialized.");
+        }
+
+        var cd = new Cd
+        {
+            Artist = "Test Artist",
+            Name = "Test Title",
+            Description = "Test Description",
+            Genre = new Genre { Name = "Test Genre" }
+        };
+
+        _dbContext.Cd.Add(cd);
+        await _dbContext.SaveChangesAsync();
+
+        var cdService = new CdService(_dbContext);
+        var controller = new CdsController(_dbContext, cdService);
+
+        var result = await controller.GetCd(cd.Id);
+
+        var cdResponse = Assert.IsType<CdResponse>(result.Value);
+
+        Assert.Equal(cd.Artist, cdResponse.Artist);
+        Assert.Equal(cd.Name, cdResponse.Name);
+        Assert.Equal(cd.Description, cdResponse.Description);
+        Assert.Equal(cd.Genre?.Name, cdResponse.Genre);
     }
 }
