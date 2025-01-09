@@ -55,5 +55,35 @@ public class CdController : Controller
         return cd;
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCd(int id, string artist)
+    {
+        var cd = await _context.Cd.FindAsync(id);
+
+        if (cd == null)
+        {
+            return NotFound();
+        }
+
+        cd.Artist = artist;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException) when (!CdExists(id))
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+        
+    }
+
+    private bool CdExists(int id)
+    {
+        return _context.Cd.Any(cd => cd.Id == id);
+    }
+
 }
 
