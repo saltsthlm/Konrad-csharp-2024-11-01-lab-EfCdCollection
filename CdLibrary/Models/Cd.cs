@@ -13,6 +13,8 @@ public class Cd
     [StringLength(200, MinimumLength = 2)]
     public string Description { get; set; }
 
+    public Genre Genre { get; set; }
+
     [DataType(DataType.Date)]
     public DateTime purchaseDate { get; set; }
 }

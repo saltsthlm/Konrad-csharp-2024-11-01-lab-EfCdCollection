@@ -8,14 +8,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CdLibrary.Models;
+using CdLibrary.Data;
 
 public class CdController : Controller
 {
-    // private readonly CdContext _context;
+    private readonly CdContext _context;
 
-    // public CdController(CdContext context)
-    // {
-    //     _context = context;
-    // }
+    public CdController(CdContext context)
+    {
+        _context = context;
+    }
 
-} 
+    [HttpGet("{Genre}")]
+    public async Task<ActionResult<IEnumerable<Cd>>> GetCd(string genre)
+    {
+        var list = await _context.Cd.ToListAsync();
+        if (genre != null)
+        {
+            return list;
+        }
+        return list.Where(cd => cd.Genre.Name == genre).ToList();
+    }
+
+}
+
