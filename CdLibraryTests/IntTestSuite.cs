@@ -1,6 +1,7 @@
 using CdLibrary.Controllers;
 using CdLibrary.Data;
 using CdLibrary.Models;
+using CdLibrary.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,8 @@ public class TestSuite1 : IAsyncLifetime
         _dbContext.Cd.Add(expectedCd);
         await _dbContext.SaveChangesAsync();
 
-        var controller = new CdsController(_dbContext);
+        var cdService = new CdService(_dbContext);
+        var controller = new CdsController(_dbContext, cdService);
 
         var result = await controller.GetCds(null);
 
@@ -79,7 +81,8 @@ public class TestSuite1 : IAsyncLifetime
             Genre = new Genre { Name = "New Genre" }
         };
 
-        var controller = new CdsController(_dbContext);
+        var cdService = new CdService(_dbContext);
+        var controller = new CdsController(_dbContext, cdService);
 
         var result = await controller.PostCd(newCd);
 
@@ -121,7 +124,8 @@ public class TestSuite1 : IAsyncLifetime
             Genre = new Genre { Name = "Updated Genre" }
         };
 
-        var controller = new CdsController(_dbContext);
+        var cdService = new CdService(_dbContext);
+        var controller = new CdsController(_dbContext, cdService);
 
         var result = await controller.UpdateCd(existingCd.Id, updatedCd.Artist);
 

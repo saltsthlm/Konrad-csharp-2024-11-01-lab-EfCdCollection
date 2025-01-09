@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using CdLibrary.Data;
+using CdLibrary.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<CdContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<CdService>();
 
 var app = builder.Build();
 

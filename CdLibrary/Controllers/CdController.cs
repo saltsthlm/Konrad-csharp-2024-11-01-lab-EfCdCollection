@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CdLibrary.Models;
 using CdLibrary.Data;
+using CdLibrary.DTOs;
+using CdLibrary.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class CdsController : Controller
 {
     private readonly CdContext _context;
+    private readonly CdService _cdService;
 
-    public CdsController(CdContext context)
+    public CdsController(CdContext context, CdService cdService)
     {
         _context = context;
+        _cdService = cdService;
     }
 
     [HttpGet]
@@ -42,16 +46,16 @@ public class CdsController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Cd>> GetCd(int id)
+    public async Task<ActionResult<CdResponse>> GetCd(int id)
     {
-        var cd = await _context.Cd.FindAsync(id);
+        var cdResponse = await _cdService.GetCdByIdAsync(id);
 
-        if (cd == null)
+        if (cdResponse == null)
         {
             return NotFound();
         }
 
-        return cd;
+        return cdResponse;
     }
 
     [HttpPut("{id}/artist")]
