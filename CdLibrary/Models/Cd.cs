@@ -10,14 +10,12 @@ public class Cd
     [Required]
     public required string Name { get; set; }
     [StringLength(60, MinimumLength = 2)]
-    [Required]
-    public required string Artist { get; set; }
+    public string? Artist { get; set; }
     [StringLength(200, MinimumLength = 2)]
     [Required]
     public required string Description { get; set; }
-    [Required]
-
-    public required Genre Genre { get; set; }
+    [Range(1, 100)]
+    public required Genre? Genre { get; set; }
 
     [DataType(DataType.Date)]
     public DateTime purchaseDate { get; set; }
