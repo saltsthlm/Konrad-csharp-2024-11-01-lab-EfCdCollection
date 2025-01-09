@@ -11,11 +11,11 @@ using CdLibrary.Models;
 
 public class CdController : Controller
 {
-    private readonly CdContext _context;
+    // private readonly CdContext _context;
 
-    public CdController(CdContext context)
-    {
-        _context = context;
-    }
+    // public CdController(CdContext context)
+    // {
+    //     _context = context;
+    // }
 
 } 
