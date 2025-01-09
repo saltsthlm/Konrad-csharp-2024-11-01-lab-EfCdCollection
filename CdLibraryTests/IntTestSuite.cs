@@ -92,4 +92,43 @@ public class TestSuite1 : IAsyncLifetime
         Assert.NotNull(dbCd);
         Assert.Equal(newCd.Name, dbCd?.Name);
     }
+
+    [Fact]
+    public async Task PutCdShouldUpdateExistingRow()
+    {
+        if (_dbContext == null)
+        {
+            throw new InvalidOperationException("Database context is not initialized.");
+        }
+
+        var existingCd = new Cd
+        {
+            Artist = "Existing Artist",
+            Name = "Existing Title",
+            Description = "Existing Description",
+            Genre = new Genre { Name = "Existing Genre" }
+        };
+
+        _dbContext.Cd.Add(existingCd);
+        await _dbContext.SaveChangesAsync();
+
+        var updatedCd = new Cd
+        {
+            Id = existingCd.Id,
+            Name = "Updated Title",
+            Artist = "Updated Artist",
+            Description = "Updated Description",
+            Genre = new Genre { Name = "Updated Genre" }
+        };
+
+        var controller = new CdsController(_dbContext);
+
+        var result = await controller.UpdateCd(existingCd.Id, updatedCd.Artist);
+
+        Assert.IsType<NoContentResult>(result);
+
+        var dbCd = await _dbContext.Cd.FindAsync(existingCd.Id);
+        Assert.NotNull(dbCd);
+        Assert.Equal(updatedCd.Artist, dbCd?.Artist);
+    }
 }
